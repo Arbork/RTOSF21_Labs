@@ -191,7 +191,7 @@ void task_init(void){
                LEDOFF_task,
                DEF_NULL,
                LEDOFF_TASK_PRIO,
-               &stack4[0],
+               &stack8[0],
                (LEDOFF_TASK_STACK_SIZE / 10u),
                LEDOFF_TASK_STACK_SIZE,
                0u,
@@ -216,11 +216,54 @@ void task_init(void){
              (OS_OPT_TASK_STK_CLR),
              &err);
    EFM_ASSERT((RTOS_ERR_CODE_GET(err) == RTOS_ERR_NONE)); // Check that there are no errors in creating the task.
+}
 
-      ///////////////////////////////////////////////
-      /// Create resources
-      /// ///////////////////////////////////////////
 
+
+static void physEng_task(void * arg){
+    while(1){
+
+    }
+}
+
+
+
+static void landing_task(void * arg){
+    while(1){
+
+    }
+}
+
+
+
+static void LCD_task(void * arg){
+    while(1){
+
+    }
+}
+
+
+
+static void fuel_task(void * arg){
+    while(1){
+
+    }
+}
+
+
+
+static void AOA_task(void * arg){
+    while(1){
+
+    }
+}
+
+
+
+static void postgame_task(void * arg){
+    while(1){
+
+    }
 }
 
 
@@ -242,8 +285,29 @@ void task_init(void){
 static void LEDON_task(void *arg){
     // Drive the leds based on input
     RTOS_ERR  err;
-    OS_FLAGS  flags;
+    OS_SEM_CTR  ctr;
     while(1){
+        // Pend on LEDON semaphore
+        ctr = OSSemPend(&LEDON_SEM, 0, OS_OPT_PEND_BLOCKING, DEF_NULL, &err);
+        EFM_ASSERT((RTOS_ERR_CODE_GET(err) == RTOS_ERR_NONE));
+
+        // Turn on LED
+        GPIO_PinOutSet(LED0_port, LED0_pin);
+        ////////////////////////////////////////////////////////////////////////
+        // Pend on LED Duty Cycle Mutex for the data structure
+        OSMutexPend(&DUTYCYC_MUTEX, 0, OS_OPT_PEND_BLOCKING, DEF_NULL, &err);
+        EFM_ASSERT((RTOS_ERR_CODE_GET(err) == RTOS_ERR_NONE));
+
+
+        // Release Mutex on Duty Cycle Mutex
+        OSMutexPost(&DUTYCYC_MUTEX, OS_OPT_POST_ALL, &err);
+        EFM_ASSERT((RTOS_ERR_CODE_GET(err) == RTOS_ERR_NONE));
+        ////////////////////////////////////////////////////////////////////////
+        // Post to LEDOFF semaphore
+        ctr = OSSemPost(&LEDOFF_SEM, OS_OPT_POST_ALL, &err);
+        EFM_ASSERT((RTOS_ERR_CODE_GET(err) == RTOS_ERR_NONE));
+
+        // Block for amount of time specified by Duty Cycle
 
     }
 }
@@ -265,8 +329,16 @@ static void LEDON_task(void *arg){
 static void LEDOFF_task(void *arg){
     // Drive the leds based on input
     RTOS_ERR  err;
-    OS_FLAGS  flags;
+    OS_SEM_CTR  ctr;
     while(1){
+        // Pend on LEDOFF semaphore
+        ctr = OSSemPend(&LEDOFF_SEM, 0, OS_OPT_PEND_BLOCKING, DEF_NULL, &err);
+        EFM_ASSERT((RTOS_ERR_CODE_GET(err) == RTOS_ERR_NONE));
+
+
+        // Post to LEDON semaphore
+        ctr = OSSemPost(&LEDON_SEM, OS_OPT_POST_ALL, &err);
+        EFM_ASSERT((RTOS_ERR_CODE_GET(err) == RTOS_ERR_NONE));
 
     }
 }

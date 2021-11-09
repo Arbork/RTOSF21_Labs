@@ -21,9 +21,9 @@
  ******************************************************************************/
 void app_init(void){
     gpio_open();
-  //blink_init();
     task_init();
     queue_init();
+    resources_init();
 
 }
 

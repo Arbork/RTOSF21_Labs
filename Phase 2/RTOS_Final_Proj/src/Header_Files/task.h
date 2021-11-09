@@ -6,6 +6,7 @@
 #include "pushbutton.h"
 #include "em_emu.h"
 #include "queue.h"
+#include "resources.h"
 #include "os.h"
 //#include "os_core.c"
 ///////////////////////////////////////////////////////////////////////////////
