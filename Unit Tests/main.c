@@ -5,6 +5,6 @@ using namespace std;
 
 int main(){
 
-
+    runtests();   
     return 0;
 }

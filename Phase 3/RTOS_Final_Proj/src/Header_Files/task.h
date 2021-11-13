@@ -127,10 +127,30 @@ struct FuelStr{
 #define MAXTHRUST       5   // Fuel units per second
 #define THRUST_QUANTA   10  // Percent of thrust incremented or decremented per Fuel freq
 
+// Configuration Data Structure
+struct configStr{
+    uint8_t STR_VERSION;    // Version of this data structure
+    uint32_t gravity;       // Acceleration due to gravity
+    uint32_t vehMass;       // Mass of Vehicle
+    int32_t xMin;          // Graphing Limits
+    int32_t xMax;          // Graphing Limits
+    uint32_t maxThrust;     // In Newtons
+    uint32_t conversionEff; // Conversion efficiency (fuel->thrust)
+    uint32_t fuelNrgDens;   // Density of energy per gram
+    uint32_t maxLandSpdH;  // Maximum speed player can successfully land at Horizontally [mm/s]
+    uint32_t maxLandSpdV;  // Maximum speed player can successfully land at Vertically   [cm/s]
+    int32_t initVeloV;      // [cm/s]
+    int32_t initVeloH;      // [cm/s]
+    uint32_t blkOutAccel;   // Threshold of acceleration for blacking out   [mm/s^2]
+    uint32_t blkOutDura;    // Duration of blackout         [s]
+    int32_t initX;          // Initial Horizontal location  [mm]
+};
+
+
 
 // AoA Struct
 struct AngleStr{
-    uint8_t AoA;
+    int8_t AoA;
 };
 #define LEFT_MOST_PAD       -4
 #define LEFT_INNER_PAD      -2
@@ -149,7 +169,13 @@ enum bitSpec{
 #define APP_FLAG_ALL 0x3
 
 
+///////////////////////////////////////////////////////////////////////////////
+// Update frequencies
+#define PHYS_FREQ   100 // [ms]
+#define DISP_FREQ   100 // [ms]
 
+
+//////////////////////////////////////////////////////////////////////////////
 
 
 
